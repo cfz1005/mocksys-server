@@ -9,17 +9,17 @@ let sendMail = async({tomail,subject,html})=>{
         secure: false, // true for 465, false for other ports
         auth: {
             //发送者邮箱
-            user: 'chenfanzhang@4399inc.com', // generated ethereal user
+            user: '你的邮箱', // generated ethereal user
             //pass 不是邮箱账户的密码而是stmp的授权码（必须是相应邮箱的stmp授权码）
             //邮箱---设置--账户--POP3/SMTP服务 开启--成功开启POP3/SMTP服务,在第三方客户端登录时，密码框请输入以下授权码：
-            pass: '05033104.abC'
+            pass: '授权码'
         }
     });
     
     // 邮件的相关信息
     let msg = {
         //发送者邮箱
-        from: 'MockSys <chenfanzhang@4399inc.com>', // sender address
+        from: 'MockSys <xxx@xx.com>', // sender address
         //接收者邮箱，多个邮箱用逗号间隔
         to: tomail, // list of receivers
         //邮件标题
