@@ -1,0 +1,10 @@
+[18:45:21] 错误信息：Data too long for column 'content' at row 1，sql语句：
+            INSERT INTO 
+            logs(uid, type, subjectid, title, content, addtime) 
+            VALUES(100000,1,'2','添加项目成员','新成员uid=2853307343@qq.com(100006)','2020-06-15 18:45:21')
+            [18:49:48] 错误信息：Data too long for column 'content' at row 1，sql语句：
+            INSERT INTO 
+            logs(uid, type, subjectid, title, content, addtime) 
+            VALUES(100000,1,'2','添加项目成员','新成员uid=2853307343@qq.com(100006)','2020-06-15 18:49:48')
+            
+
