@@ -23,7 +23,15 @@ const router = {
                 const checkpwd = crypt.decrypt(data.password, res[0].password);
                 if (checkpwd) {
                     const token = jwt.sign({ uid: res[0].id });
-                    await tokens.add(token);
+                    await tokens.add(token,res[0].id);
+
+                    // ctx.cookies.set("token", token, {
+                    //     domain: "localhost", // 有效作用域 .xxx.com
+                    //     maxAge: 24 * 3600 * 1000, // 有效时长
+                    //     httpOnly: true, // 只允许从http请求中获取
+                    //     overwrite: false // 不可重写
+                    // });
+
                     return response.success(ctx, { token });
                 } else {
                     // response.error(ctx,"密码错误");
@@ -40,9 +48,9 @@ const router = {
     logout: async (ctx, next) => {
         try {
             let res = await tokens.delete(ctx.header.token);
-            if(res.affectedRows){
+            if (res.affectedRows) {
                 return response.success(ctx, "退出成功");
-            }else{
+            } else {
                 return response.error(ctx, "退出失败");
             }
         } catch (error) {

@@ -1,8 +1,8 @@
 const query = require("../utils/mysql");
 
 let token = {
-    add: (value) => {
-        return query("INSERT INTO tokens(val) values(?)", [value]);
+    add: (value,uid) => {
+        return query("INSERT INTO tokens(val,uid) values(?,?)", [value,+uid]);
     },
     getModelByValue: (value) => {
         return query(`SELECT * FROM tokens WHERE val=?`, [value]);

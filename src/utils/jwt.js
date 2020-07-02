@@ -11,6 +11,7 @@ module.exports = {
             } else {
                 if (ctx.header && ctx.header.token) {
                     try {
+                        // 这个查询是考虑到，比如后台禁用了该用户
                         let res = await tokens.getModelByValue(ctx.header.token);
                         if (!res.length) {
                             return response.json(ctx, "", 403, "Token validation failed~");
