@@ -125,11 +125,12 @@ const router = {
         try {
             res = await users.getRowById(ctx.state.user.uid);
             if (res.length) {
+                let avatar_host = config.serverDomain?config.serverDomain:`${config.serverURL}:${ctx.serverPort}`;
                 return response.success(ctx, {
                     uid: ctx.state.user.uid,
                     nickname: res[0].nickname,
                     username: res[0].username,
-                    avatar: `${config.serverURL}:${ctx.serverPort}/avatar/` + res[0].avatar
+                    avatar: `${avatar_host}/avatar/` + res[0].avatar
                 });
             } else {
                 return response.error(ctx, "查询不到该用户");

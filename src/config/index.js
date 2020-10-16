@@ -1,4 +1,5 @@
 const config = {
+    serverDomain:"", // 服务端如有做代理，指向的域名
     serverURL:"http://192.168.53.147",
     serverPort: "8088", // 应用程序启动端口号
     keys: ["app-keys"], // 用于session加密

@@ -40,7 +40,7 @@ module.exports = {
     },
     sign: (payload = {}) => {
         return jwt.sign(payload, config.secret, { expiresIn: "4h" }); // 有效期4小时
-        return jwt.sign(payload, config.secret, { expiresIn: 10 }); // 有效期10秒
+        // return jwt.sign(payload, config.secret, { expiresIn: 10 }); // 有效期10秒
         // expiresIn：以秒表示或描述时间跨度zeit / ms的字符串。如：60，"2 days"，"10h"，"7d"
     }
 }
