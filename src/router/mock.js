@@ -1,6 +1,7 @@
 const Mock = require("mockjs");
 const logs = require("../utils/logs");
 const interface = require("../controller/interface");
+const redis = require("../utils/redis");
 const { VM } = require("vm2")
 const { Safeify } = require("safeify")
 
@@ -12,19 +13,25 @@ const router = {
      */
     analysis: async (ctx, next) => {
         const { projectid, method, url } = ctx.params;
-        let res = await interface.getModelByUrlAndProjectIdAndMethod({ url, projectid, method });
-        if (!res.length) {
-            // ctx.body = "404 Not Found";
-            ctx.body = { message: "404 Not Found" };
-            return next();
+        let res = null;
+
+        // get redis
+        const redis_key = `/${projectid}/${method}/${url}`;
+        res = await redis.get(redis_key);
+        if (res === null || res === "err") {
+            let res_data = await interface.getModelByUrlAndProjectIdAndMethod({ url, projectid, method });
+            if (!res_data.length) {
+                ctx.body = { message: "404 Not Found" };
+                return next();
+            }
+            res = res_data[0].content;
+
+            // set redis
+            redis.set(redis_key, res, 60);
         }
-        // else if (res[0].method.toUpperCase() != ctx.method.toUpperCase()) {
-        //     ctx.body = "未匹配到接口，请检查请求类型是否正确~";
-        //     return next();
-        // }
+
         try {
-            // let data = Mock.mock(JSON.parse(res[0].content.replace(/\\'/g, "'")));
-            let data = router._MockHandler(ctx, next, res[0].content);
+            let data = router._MockHandler(ctx, next, res);
             ctx.body = data;
             return next();
         } catch (error) {
@@ -37,29 +44,40 @@ const router = {
      */
     analysis2: async (ctx, next) => {
         const { interfaceid } = ctx.params;
-        let res = await interface.getModelById(interfaceid);
-        if (!res.length) {
-            // ctx.body = "404 Not Found";
-            ctx.body = { message: "404 Not Found" };
-            return next();
-        } else if (res[0].method.toUpperCase() != ctx.method.toUpperCase()) {
-            // ctx.body = "未匹配到接口，请检查请求类型是否正确~";
-            ctx.body = { message: "未匹配到接口，请检查请求类型是否正确" };
-            return next();
+        let res = null;
+
+        // get redis
+        const redis_key = `/${interfaceid}`;
+        res = await redis.get(redis_key);
+        if (res === null || res === "err") {
+            let res_data = await interface.getModelById(interfaceid);
+            if (!res_data.length) {
+                ctx.body = { message: "404 Not Found" };
+                return next();
+            } else if (res_data[0].method.toUpperCase() != ctx.method.toUpperCase()) {
+                ctx.body = { message: "未匹配到接口，请检查请求类型是否正确" };
+                return next();
+            }
+            res = res_data[0].content;
+
+            // set redis
+            redis.set(redis_key, res, 60);
         }
+
         try {
-            // let data = Mock.mock(JSON.parse(res[0].content.replace(/\\'/g, "'")));
-            let data = router._MockHandler(ctx, next, res[0].content);
+            let data = router._MockHandler(ctx, next, res);
             ctx.body = data;
             return next();
         } catch (error) {
             ctx.throw(500);
         }
     },
-    _MockHandler(ctx,next,data) {
+
+    // private
+    _MockHandler(ctx, next, data) {
         // Mock增强
         Mock.Handler.function = function (options) {
-            process.exit = function(){} // 以防操作到主进程
+            process.exit = function () { } // 以防操作到主进程
             options.Mock = Mock
             // 传入 request cookies，方便使用
             options._req = ctx.request
@@ -84,16 +102,18 @@ const router = {
         // let mode = JSON.parse(data);
         let mode = {};
         try {
-            mode = JSON.parse(data,(key, val)=>{
-                if(val.toString().indexOf("function")>-1){
-                    return eval("(function(){return "+val+"})()");
+            mode = JSON.parse(data, (key, val) => {
+                if (val.toString().indexOf("function") > -1) {
+                    return eval("(function(){return " + val + "})()");
                 }
                 return val;
             });
         } catch (error) {
+            // console.log(error);
+            // logs.write(error);
             mode = {
-                code:401, 
-                message:"数据格式有误，解析失败~"
+                code: 401,
+                message: "数据格式有误，解析失败~"
             }
         }
 
@@ -120,7 +140,7 @@ const router = {
         // }
 
 
-        
+
 
         // safeify方案
         // const vm = new Safeify({

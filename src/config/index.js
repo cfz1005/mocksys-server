@@ -14,6 +14,10 @@ const config = {
         renew: false, /** 是否在Session快过期时刷新Session的有效期。(默认是 false) */
     },
     secret: "token-keys", // token秘钥
+    redis:{
+        host: "127.0.0.1",
+        port: "6379"
+    },
     mysql: {
         host: "127.0.0.1",
         port: "3306",

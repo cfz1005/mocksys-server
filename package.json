@@ -24,6 +24,7 @@
     "moment": "^2.26.0",
     "mysql": "^2.18.1",
     "nodemailer": "^6.4.8",
+    "redis": "^3.0.2",
     "request": "^2.88.2",
     "restc": "^0.4.2",
     "safeify": "^5.0.5",
