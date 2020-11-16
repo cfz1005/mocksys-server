@@ -5,7 +5,7 @@ const logs = {
     write: (txt) => {
         let date = new Date();
         let filename = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".txt";
-        let filedir = path.resolve(__dirname, "../logs/" + filename);
+        let filedir = path.resolve(__dirname, "../../logs/" + filename);
         txt = `[${date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()}] ${txt}`;
 
         fs.access(filedir, (err) => {

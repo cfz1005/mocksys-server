@@ -1,6 +1,9 @@
 .DS_Store
 node_modules
 /src/utils/mail.js
+/logs
+/sql
+
 
 # local env files
 .env.local

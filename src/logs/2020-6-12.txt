@@ -1,4 +1,0 @@
-[18:15:8] 错误信息：Table 'mockapi.project2' doesn't exist，sql语句：SELECT * FROM project2 WHERE status=1 and uid=100000
-
-[18:16:31] 错误信息：Table 'mockapi.project2' doesn't exist，sql语句：SELECT * FROM project2 WHERE status=1 and uid=100000
-
