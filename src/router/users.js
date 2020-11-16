@@ -102,14 +102,13 @@ const router = {
             if (res.length > 0) {
                 let new_password = stringrandom(6, { letters: false });
                 let new_password_crypt = crypt.encrypt(new_password);
-                let upd_res = await users.updateUserByUserName(data.username, new_password_crypt);
+                let upd_res = await users.updatePasswordByUserName(data.username, new_password_crypt);
                 if (upd_res.affectedRows) {
                     await mail({
                         tomail: data.username,
                         subject: "找回密码",
                         html: "新密码：<b>" + new_password + "</b>，请妥善保管~"
-                    }
-                    );
+                    });
                     return response.success(ctx, "新密码已经发送到你邮箱，请查收~");
                 } else {
                     return response.error(ctx, "找回密码失败");
@@ -138,7 +137,36 @@ const router = {
         } catch (error) {
             ctx.throw(500);
         }
-    }
+    },
+    updatepwd: async (ctx, next) => {
+        let data = ctx.request.body;
+        if (!data.username || !data.old_password || !data.new_password) {
+            return response.error(ctx, "参数有误");
+        }
+
+        try {
+            let res = await users.getRowByUserName(data.username);
+            if (res.length > 0) {
+                const checkpwd = crypt.decrypt(data.old_password, res[0].password);
+                if (checkpwd) {
+                    let new_password_crypt = crypt.encrypt(data.new_password);
+                    let upd_res = await users.updatePasswordByUserName(data.username, new_password_crypt);
+                    if (upd_res.affectedRows) {
+                        return response.success(ctx, "修改成功，请退出重新登录");
+                    } else {
+                        return response.error(ctx, "修改失败");
+                    }
+                } else {
+                    // response.error(ctx,"密码错误");
+                    return response.error(ctx, "原密码错误");
+                }
+            } else {
+                return response.error(ctx, "该账户不存在");
+            }
+        } catch (error) {
+            ctx.throw(500);
+        }
+    },
 }
 
 module.exports = router;

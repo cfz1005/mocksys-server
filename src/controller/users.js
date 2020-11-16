@@ -4,25 +4,25 @@ const moment = require("moment");
 let users = {
     // 通过账号获取用户信息
     getRowByUserName: (username) => {
-        return query(`SELECT * FROM USERS WHERE username=?`, [username]);
+        return query(`SELECT * FROM users WHERE username=?`, [username]);
     },
     // 通过uid获取用户信息
     getRowById: (id) => {
-        return query(`SELECT * FROM USERS WHERE id=?`, [id]);
+        return query(`SELECT * FROM users WHERE id=?`, [id]);
     },
     // 新增一个用户（注册）
     addUser: ({ username, password, nickname }) => {
         return query(`
             INSERT INTO 
-            USERS(username,password,nickname,status,avatar,addtime) 
+            users(username,password,nickname,status,avatar,addtime) 
             VALUES(?,?,?,?,?,?)
         `,
             [username, password, nickname, 1, avatar[Math.floor(Math.random() * avatar.length)] + ".png", moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")]
         );
     },
-    // 通过账号修改密码（重置密码/找回密码）
-    updateUserByUserName: (username, new_password) => {
-        return query(`UPDATE USERS SET password=? WHERE username=?`, [new_password, username]);
+    // 通过账号修改密码（重置密码/找回密码 & 修改密码）
+    updatePasswordByUserName: (username, new_password) => {
+        return query(`UPDATE users SET password=? WHERE username=?`, [new_password, username]);
     }
 
 }

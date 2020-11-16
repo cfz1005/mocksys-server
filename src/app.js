@@ -6,6 +6,7 @@ const cors = require("koa2-cors");
 const path = require("path");
 const session = require("koa-session");
 // const jwt2 = require("./utils/jwt2");
+const restc = require('restc');
 const jwt = require("./utils/jwt");
 const router = require("./router");
 const config = require("./config");
@@ -41,7 +42,7 @@ app.use(cors({
 }));
 
 
-
+app.use(restc.koa2());
 app.use(static(path.resolve(__dirname, "..") + "/public"));
 app.use(bodyParser());
 app.use(jwt.verify());

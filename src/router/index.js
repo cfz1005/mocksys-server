@@ -16,6 +16,7 @@ router.post("/users/logout", users.logout);
 router.post("/users/register", users.register);
 router.post("/users/getpwd", users.getpwd);
 router.get("/users/getuserinfo", users.getuserinfo);
+router.post("/users/updatepwd", users.updatepwd);
 
 router.post("/project/add", project.add);
 router.post("/project/update", project.update);
@@ -48,7 +49,8 @@ router.get("/mock/:interfaceid(\\d+)", mock.analysis2);
 router.post("/mock/:interfaceid(\\d+)", mock.analysis2);
 router.put("/mock/:interfaceid(\\d+)", mock.analysis2);
 router.delete("/mock/:interfaceid(\\d+)", mock.analysis2);
-
+// test
+// router.get("/mock/test",mock.test);
 
 // 4
 module.exports = () => router.routes();
